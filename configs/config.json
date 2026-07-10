@@ -1,0 +1,17 @@
+{
+    "algorithm": "RSA",
+    "key_sizes": [
+        1024,
+        2048,
+        3072,
+        4096
+    ],
+    "iterations": 10,
+    "plaintext_directory": "data/plaintext",
+    "encrypted_directory": "data/encrypted",
+    "decrypted_directory": "data/decrypted",
+    "key_directory": "data/keys",
+    "results_directory": "results",
+    "hash_algorithm": "SHA256",
+    "padding": "OAEP"
+}
