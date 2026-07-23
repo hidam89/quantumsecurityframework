@@ -1,42 +1,105 @@
 """
 benchmark_engine.py
 
-Core benchmarking engine for the Quantum Security Benchmarking Framework (QSBF).
+Research-grade benchmarking engine.
 """
 
-from src.qsbf.utils.timer import Timer
+import time
+
 from src.qsbf.benchmarking.benchmark_result import BenchmarkResult
 
 
 class BenchmarkEngine:
-    """
-    Executes benchmark operations on cryptographic algorithms.
-    """
 
-    def benchmark_key_generation(self, algorithm, key_size: int) -> BenchmarkResult:
-        """
-        Benchmark cryptographic key generation.
+    def benchmark_key_generation(self, algorithm, key_size):
 
-        Args:
-            algorithm: Algorithm instance.
-            key_size: Key size in bits.
+        start = time.perf_counter()
 
-        Returns:
-            BenchmarkResult
-        """
+        algorithm.generate_keys()
 
-        with Timer() as timer:
-            algorithm.generate_keys()
+        end = time.perf_counter()
 
         return BenchmarkResult(
             algorithm=algorithm.name,
             key_size=key_size,
-            key_generation_time=timer.elapsed,
+
+            key_generation_time=end - start,
             encryption_time=0.0,
             decryption_time=0.0,
+
             plaintext_size=0,
             ciphertext_size=0,
+
             memory_usage_mb=0.0,
             cpu_usage_percent=0.0,
-            success=True,
+
+            success=True
+        )
+
+    def benchmark_encryption(
+        self,
+        algorithm_name,
+        key_size,
+        encrypt_function,
+        plaintext
+    ):
+
+        start = time.perf_counter()
+
+        ciphertext = encrypt_function()
+
+        end = time.perf_counter()
+
+        return (
+            ciphertext,
+            BenchmarkResult(
+                algorithm=algorithm_name,
+                key_size=key_size,
+
+                key_generation_time=0.0,
+                encryption_time=end - start,
+                decryption_time=0.0,
+
+                plaintext_size=len(plaintext),
+                ciphertext_size=len(ciphertext),
+
+                memory_usage_mb=0.0,
+                cpu_usage_percent=0.0,
+
+                success=True
+            )
+        )
+
+    def benchmark_decryption(
+        self,
+        algorithm_name,
+        key_size,
+        decrypt_function,
+        ciphertext
+    ):
+
+        start = time.perf_counter()
+
+        plaintext = decrypt_function()
+
+        end = time.perf_counter()
+
+        return (
+            plaintext,
+            BenchmarkResult(
+                algorithm=algorithm_name,
+                key_size=key_size,
+
+                key_generation_time=0.0,
+                encryption_time=0.0,
+                decryption_time=end - start,
+
+                plaintext_size=len(plaintext),
+                ciphertext_size=len(ciphertext),
+
+                memory_usage_mb=0.0,
+                cpu_usage_percent=0.0,
+
+                success=True
+            )
         )

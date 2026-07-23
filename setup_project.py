@@ -1,12 +1,28 @@
+"""
+setup_project.py
+
+Quantum Security Benchmarking Framework (QSBF)
+Professional Project Generator
+"""
+
 from pathlib import Path
 
 PROJECT_NAME = "QuantumSecurityFramework"
 
+# ==========================================================
+# Project Directory Structure
+# ==========================================================
+
 directories = [
+
+    # VS Code
     ".vscode",
 
+    # Source
+    "src",
     "src/qsbf",
     "src/qsbf/config",
+    "src/qsbf/core",
     "src/qsbf/rsa",
     "src/qsbf/aes",
     "src/qsbf/hybrid",
@@ -16,28 +32,43 @@ directories = [
     "src/qsbf/visualization",
     "src/qsbf/utils",
     "src/qsbf/reports",
+    "src/qsbf/fileio",
 
+    # Configuration
     "configs",
 
+    # Data
+    "data",
     "data/plaintext",
     "data/encrypted",
     "data/decrypted",
     "data/keys",
 
+    # Results
+    "results",
     "results/csv",
     "results/excel",
     "results/figures",
     "results/reports",
 
+    # Others
     "logs",
     "docs",
     "tests",
     "notebooks",
 ]
 
+# ==========================================================
+# Root Files
+# ==========================================================
+
 files = {
 
-    "README.md": f"# {PROJECT_NAME}\n",
+    "README.md":
+f"""# {PROJECT_NAME}
+
+Quantum Security Benchmarking Framework
+""",
 
     "requirements.txt": "",
 
@@ -55,9 +86,8 @@ if __name__ == "__main__":
     ".gitignore":
 '''# Python
 __pycache__/
-*.pyc
-*.pyo
-*.pyd
+*.py[cod]
+*.egg-info/
 
 # Virtual Environment
 .venv/
@@ -66,7 +96,7 @@ venv/
 # VS Code
 .vscode/settings.json
 
-# Jupyter
+# Notebook
 .ipynb_checkpoints/
 
 # Results
@@ -76,8 +106,8 @@ results/
 logs/
 
 # OS
-.DS_Store
 Thumbs.db
+.DS_Store
 ''',
 
     "pyproject.toml":
@@ -128,38 +158,134 @@ requires-python = ">=3.12"
 '''
 }
 
-package_dirs = [
-    "src/qsbf",
-    "src/qsbf/config",
-    "src/qsbf/rsa",
-    "src/qsbf/aes",
-    "src/qsbf/hybrid",
-    "src/qsbf/pqc",
-    "src/qsbf/fhe",
-    "src/qsbf/benchmarking",
-    "src/qsbf/visualization",
-    "src/qsbf/utils",
-    "src/qsbf/reports",
-]
+# ==========================================================
+# Python Module Templates
+# ==========================================================
+
+module_templates = {
+
+    "src/qsbf/fileio/file_reader.py":
+'''"""
+file_reader.py
+
+Utility for reading files.
+"""
+
+from pathlib import Path
+
+
+class FileReader:
+
+    def read(self, file_path):
+
+        path = Path(file_path)
+
+        with open(path, "rb") as f:
+            return f.read()
+''',
+
+    "src/qsbf/fileio/file_writer.py":
+'''"""
+file_writer.py
+
+Utility for writing files.
+"""
+
+from pathlib import Path
+
+
+class FileWriter:
+
+    def write(self, file_path, data):
+
+        path = Path(file_path)
+
+        path.parent.mkdir(parents=True, exist_ok=True)
+
+        with open(path, "wb") as f:
+            f.write(data)
+'''
+}
+
+# ==========================================================
+# Create Directories
+# ==========================================================
+
+print("\nCreating directories...")
 
 for directory in directories:
+
     Path(directory).mkdir(parents=True, exist_ok=True)
 
-for package in package_dirs:
-    init_file = Path(package) / "__init__.py"
-    init_file.touch(exist_ok=True)
+# ==========================================================
+# Create __init__.py
+# ==========================================================
+
+print("Creating packages...")
+
+for directory in directories:
+
+    if directory.startswith("src/"):
+
+        init_file = Path(directory) / "__init__.py"
+
+        if not init_file.exists():
+            init_file.touch()
+
+# ==========================================================
+# Create Root Files
+# ==========================================================
+
+print("Creating project files...")
 
 for filename, content in files.items():
+
     path = Path(filename)
+
     path.parent.mkdir(parents=True, exist_ok=True)
-    path.write_text(content, encoding="utf-8")
+
+    if not path.exists():
+
+        path.write_text(content, encoding="utf-8")
+
+# ==========================================================
+# Create Module Templates
+# ==========================================================
+
+print("Creating module templates...")
+
+for filename, content in module_templates.items():
+
+    path = Path(filename)
+
+    if not path.exists():
+
+        path.parent.mkdir(parents=True, exist_ok=True)
+
+        path.write_text(content, encoding="utf-8")
+
+# ==========================================================
+# Sample File
+# ==========================================================
 
 sample = Path("data/plaintext/sample.txt")
-sample.write_text(
-    "This is the sample plaintext used for cryptographic benchmarking.",
-    encoding="utf-8"
-)
 
+if not sample.exists():
+
+    sample.write_text(
+        "This is the sample plaintext used for cryptographic benchmarking.",
+        encoding="utf-8",
+    )
+
+# ==========================================================
+# Completed
+# ==========================================================
+
+print("\n" + "=" * 60)
+print(" Quantum Security Benchmarking Framework Generated")
 print("=" * 60)
-print("Quantum Security Benchmarking Framework created successfully.")
-print("=" * 60)
+
+print("\nProject Root :")
+print(Path.cwd())
+
+print("\nCompleted Successfully.")
